@@ -109,12 +109,7 @@ UnitTest.asynctest('browser.tinymce.selection.GetSelectionContentTest', (success
         tinyApis.sSetSelection([ ], 0, [ ], 1),
         sAssertGetContent('Should be some content', editor, '          This      Has\n     Spaces', { format: 'text' })
       ]),
-      Log.stepsAsStep('TINY-6448', 'pre blocks should have preserved spaces', [
-        tinyApis.sSetContent('<pre>          This      Has\n     Spaces</pre>'),
-        tinyApis.sSetSelection([ ], 0, [ ], 1),
-        sAssertGetContent('Should be some content', editor, '          This      Has\n     Spaces', { format: 'text' })
-      ]),
-      Log.stepsAsStep('TINY-6448', 'pre blocks should have preserved spaces', [
+      Log.stepsAsStep('TINY-6448', 'p blocks should not preserve spaces', [
         tinyApis.sSetContent('<p>          This      Has\n     Spaces</p>'),
         tinyApis.sSetSelection([ ], 0, [ ], 1),
         sAssertGetContent('Should be some content', editor, 'This Has Spaces', { format: 'text' })
