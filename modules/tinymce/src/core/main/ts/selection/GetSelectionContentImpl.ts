@@ -31,15 +31,15 @@ const getInnerText = (bin: HTMLElement) => {
   return Env.browser.isIE() ? trimLeadingCollapsibleText(text) : text;
 };
 
-const getParentName = (editor: Editor, range: Range) => {
-  const contextBlock = editor.dom.getParent(range.commonAncestorContainer, editor.dom.isBlock);
-
-  return Optional.from(contextBlock).getOr('div');
-};
+const getContextNodeName = (parentBlockOpt: Optional<HTMLElement>): string =>
+  parentBlockOpt.map((block) => block.nodeName).getOr('div');
 
 const getTextContent = (editor: Editor): string =>
   Optional.from(editor.selection.getRng()).map((rng) => {
-    const bin = editor.dom.add(editor.getBody(), getParentName(editor, rng), {
+    const parentBlockOpt = Optional.from(editor.dom.getParent<HTMLElement>(rng.commonAncestorContainer, editor.dom.isBlock));
+    const body = editor.getBody();
+
+    const bin = editor.dom.add(body, getContextNodeName(parentBlockOpt), {
       'data-mce-bogus': 'all',
       'style': 'overflow: hidden; opacity: 0;'
     }, rng.cloneContents());
@@ -51,7 +51,7 @@ const getTextContent = (editor: Editor): string =>
 
     if (isCollapsibleWhitespace(nonRenderedText, 0) || isCollapsibleWhitespace(nonRenderedText, nonRenderedText.length - 1)) {
       // If the bin contains a trailing/leading space, then we need to inspect the parent block to see if we should include the spaces
-      const parentBlock = editor.dom.getParent(rng.commonAncestorContainer, editor.dom.isBlock) as HTMLElement;
+      const parentBlock = parentBlockOpt.getOr(body);
       const parentBlockText = getInnerText(parentBlock);
       const textIndex = parentBlockText.indexOf(text);
 
