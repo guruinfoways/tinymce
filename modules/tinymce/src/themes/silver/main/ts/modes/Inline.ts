@@ -134,6 +134,12 @@ const render = (editor: Editor, uiComponents: RenderUiComponents, rawUiConfig: R
     },
     hide: () => {
       ui.hide();
+    },
+    enable: () => {
+      ReadOnly.broadcastReadonly(uiComponents, false);
+    },
+    disable: () => {
+      ReadOnly.broadcastReadonly(uiComponents, true);
     }
   };
 
